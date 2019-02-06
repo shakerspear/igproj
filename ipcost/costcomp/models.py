@@ -1,3 +1,11 @@
 from django.db import models
 
-# Create your models here.
+#counsolers
+class counsoler(models.Model):
+    name = models.CharField(max_length=64)
+    salary = models.IntegerField()
+    guaranteed = models.IntegerField()
+    total = models.IntegerField()
+#students
+
+#packages
