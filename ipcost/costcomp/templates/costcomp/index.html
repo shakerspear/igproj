@@ -1,0 +1,18 @@
+{% extends "costcomp/base.html" %}
+
+{% block title %}
+Cost Comparision
+{% endblock %}
+
+{% block body %}
+    <h1>Counsolers</h1>
+    
+    {% for counsoler in counsolers %}
+        <li>
+            <a href="{% url 'counsoler' counsoler.id %}">
+                {{counsoler.id}}: {{ counsoler.firstName }} {{counsoler.lastName}} Total Cost: {{counsoler.total}} = Salary: {{counsoler.salary}} + Guaranteed: {{counsoler.guaranteed}}
+            </a>
+        </li>
+     {% endfor %}
+
+{% endblock %}

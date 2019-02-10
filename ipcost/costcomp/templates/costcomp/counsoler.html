@@ -1,0 +1,27 @@
+{% extends "costcomp/base.html" %}
+
+{% block title %}
+Counsoler Details
+{% endblock %}
+
+{% block body %}
+    <ul>
+        <li>{{counsoler.firstName}} {{counsoler.lastName}}</li>
+        <li>Salary: {{counsoler.salary}}</li>
+        <li>Guaranteed: {{counsoler.guaranteed}}</li>
+        <li>Total: {{counsoler.total}}</li>
+        <li>
+            Students:
+            <ul>
+                {% for student in students %}
+                    <li>{{student}}: 
+                        <li>Package: {{student.package}}</li>
+                    </li>
+                {% empty %}
+                    <li>No Students</li>
+                {% endfor %}
+            </ul>
+         </li>
+     </ul>
+     <a href='{% url "index" %}'>Back to counsoler list</a>
+{% endblock %}
