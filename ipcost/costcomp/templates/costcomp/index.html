@@ -10,7 +10,7 @@ Cost Comparision
     {% for counsoler in counsolers %}
         <li>
             <a href="{% url 'counsoler' counsoler.id %}">
-                {{counsoler.id}}: {{ counsoler.firstName }} {{counsoler.lastName}} Total Cost: {{counsoler.total}} = Salary: {{counsoler.salary}} + Guaranteed: {{counsoler.guaranteed}}
+                {{counsoler}}
             </a>
         </li>
      {% endfor %}

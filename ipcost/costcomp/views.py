@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 
-from .models import Counsoler, Student, Package
+from .models import *
 #index route
 def index(request):
     
@@ -17,10 +17,17 @@ def counsoler(request, counsoler_id):
         counsoler = Counsoler.objects.get(pk=counsoler_id)    
     except Counsoler.DoesNotExist:
         raise Http404("Counsoler does not exist")
+    
+    enrollments =  Enrollment.objects.select_related("package").filter(counsoler__id=counsoler_id)
+    
+    totalCost = 0
+    for enrollment in enrollments:
+        totalCost += enrollment.cost
 
     context = {
         "counsoler": counsoler,
-        "students": counsoler.students.select_related('package').all()
+        "enrollments": enrollments,
+        "totalcost": totalCost
     }
 
     return render(request, "costcomp/counsoler.html", context)

@@ -6,22 +6,21 @@ Counsoler Details
 
 {% block body %}
     <ul>
-        <li>{{counsoler.firstName}} {{counsoler.lastName}}</li>
+        <h1>{{counsoler.firstName}} {{counsoler.lastName}}</h1>
         <li>Salary: {{counsoler.salary}}</li>
         <li>Guaranteed: {{counsoler.guaranteed}}</li>
         <li>Total: {{counsoler.total}}</li>
         <li>
-            Students:
+            Workloads:
             <ul>
-                {% for student in students %}
-                    <li>{{student}}: 
-                        <li>Package: {{student.package}}</li>
-                    </li>
+                {% for enrollment in enrollments %}
+                    <li>{{enrollment}} Cost:{{enrollment.cost}}</li>
                 {% empty %}
-                    <li>No Students</li>
+                    <li>No Workloads</li>
                 {% endfor %}
             </ul>
          </li>
+         <li>Total Cost:{{totalcost}}</li>
      </ul>
      <a href='{% url "index" %}'>Back to counsoler list</a>
 {% endblock %}
