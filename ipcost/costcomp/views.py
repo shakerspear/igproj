@@ -2,6 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404
 
 from .models import *
+
+
+
 #index route
 def index(request):
     
@@ -10,6 +13,8 @@ def index(request):
     }
 
     return render(request, "costcomp/index.html", context)
+
+
 
 #for individual counsoler
 def counsoler(request, counsoler_id):
@@ -22,12 +27,15 @@ def counsoler(request, counsoler_id):
     
     totalCost = 0
     for enrollment in enrollments:
+        dateDiff = enrollment.endDate.month - enrollment.startDate.month
         totalCost += enrollment.cost
 
     context = {
         "counsoler": counsoler,
         "enrollments": enrollments,
-        "totalcost": totalCost
+        "totalcost": totalCost,
+        "datediff": dateDiff,
+        "costsalad": totalCost-counsoler.total,
     }
 
     return render(request, "costcomp/counsoler.html", context)

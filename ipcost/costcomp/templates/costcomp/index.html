@@ -1,18 +1,29 @@
 {% extends "costcomp/base.html" %}
 
 {% block title %}
-Cost Comparision
+Counsoler List
 {% endblock %}
 
 {% block body %}
-    <h1>Counsolers</h1>
+    <h2>Counsoler List</h2>
     
-    {% for counsoler in counsolers %}
-        <li>
-            <a href="{% url 'counsoler' counsoler.id %}">
-                {{counsoler}}
-            </a>
-        </li>
-     {% endfor %}
-
+    <table>
+        <tr>
+            <th>Counsoler</th>
+            <th>Role</th>
+            <th>Salary</th>
+            <th>Guarantee</th>
+        </tr>    
+        {% for counsoler in counsolers %}
+        <tr>
+            <td>
+                <a href="{% url 'counsoler' counsoler.id %}">
+                {{counsoler.firstName}} {{counsoler.lastName}}
+                </a>
+            </td>
+            <td>{{counsoler.level}}</td>
+            <td>{{counsoler.salary}}</td>
+            <td>{{counsoler.guaranteed}}</td>
+        </tr>
+        {% endfor %}
 {% endblock %}
