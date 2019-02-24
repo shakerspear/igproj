@@ -27,7 +27,7 @@ def counsoler(request, counsoler_id):
     
     totalCost = 0
     for enrollment in enrollments:
-        dateDiff = enrollment.endDate.month - enrollment.startDate.month
+        dateDiff = enrollment.packEnd.month - enrollment.packStart.month
         totalCost += enrollment.cost
 
     context = {
