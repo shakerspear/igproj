@@ -14,14 +14,21 @@ Counsoler Details
             Workloads:
             <ul>
                 {% for enrollment in enrollments %}
-                    <li>{{enrollment}} Cost:{{enrollment.cost}}</li>
+                    <li>{{enrollment}}</li>
                 {% empty %}
                     <li>No Workloads</li>
                 {% endfor %}
             </ul>
          </li>
-         <li>Total Cost:{{totalcost}}</li>
-         <h3>Cost to Salary Difference: {{costsalad}}</h3>
-     </ul>
-     <a href='{% url "index" %}'>Back to counsoler list</a>
+            
+         <li>Total Cost:{{totalCost}}</li>
+         <h3>Cost to Salary Difference: {{CSDiff}}</h3>
+
+    </ul>
+    <form action="{% url 'counsoler' counsoler.id%}" method="post">
+        {% csrf_token %}
+        {{form}}
+        <input type="submit" value="Submit">
+    </form>   
+    <a href='{% url "index" %}'>Back to counsoler list</a>
 {% endblock %}
