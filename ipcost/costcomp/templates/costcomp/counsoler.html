@@ -9,45 +9,48 @@ Counsoler Details
 
 {% block body %}
 <div class="container" style="padding:20px;">
-        <div class="col-10"><a href='{% url "index" %}' class="float-right">Back to counsoler list</a></div>
-        <br/>
-        <h1>{{counsoler.first}} {{counsoler.last}}</h1>
-        <p>Salary: {{counsoler.salary}}</p>
-        <p>Guaranteed: {{counsoler.guaranteed}}</p>
-        <p>Total Compensation: {{counsoler.total}}</p>
-        <p>Defrayal :{{defrayal}}</p>
-        <p>Comp. to Defrayal Difference: {{SCDiff}}</p>
+    <div class="row">
+        <div class="col-3" style="background-color:steelblue; color:white; padding:20px;">
+            <h1>{{counsoler.first}} {{counsoler.last}}</h1>
+            <p>Salary: {{counsoler.salary}}</p>
+            <p>Guaranteed: {{counsoler.guaranteed}}</p>
+            <p>Compensation: {{counsoler.total}}</p>
+            <p>Defrayal :{{defrayal}}</p>
+            <p>Comp. - Defrayal: {{SCDiff}}</p>
 
-        <form action="{% url 'counsoler' counsoler.id%}" method="post">
-            {% csrf_token %}
-            {{form}}
-            <br/>
-            <button type="submit" class="btn btn-outline-secondary">Submit</button>
-        </form>   
-        <br/> 
-        <p>Workloads:</p>
-        <div style="display:flex; flex-wrap:wrap;">
+            <form action="{% url 'counsoler' counsoler.id%}" method="post">
+                {% csrf_token %}
+                {{form}}
+                <br/>
+            <button type="submit" class="btn btn-dark">Submit</button>
+            </form>   
+        </div>
+        
+        <div class="col-9">
+            <div><b>Workloads:</b><a href='{% url "index" %}' style="float:right;">Back to counsoler list</a></div>
+            <div style="display:flex; flex-wrap:wrap;">
             
                 {% for enrollment in enrollments %}
-                    <div style="background-color:#F2F2F2; font-size:14px; margin: 20px; padding:20px; width:200px;">
-                    <div>
-                        {{forloop.counter}}.
-                        <div class="float-right">${{enrollment.var}}</div>
-                    </div><br/>
-                    <p>{{enrollment}}</p>
-                    <p>{{enrollment.package}}</p>
-                    <p>
-                    {% if counsoler.level == 'FAO' %}
-                        {{enrollment.faoStart}} to {{enrollment.faoEnd}}
-                    {% elif counsoler.level == 'GC' %}
-                        {{enrollment.gcStart}} to {{enrollment.gcEnd}}
-                    {% endif %}
-                    </p>
+                    <div style="background-color:#F2F2F2; font-size:14px; margin: 20px; padding:20px; width:220px;">
+                        <div>
+                            {{forloop.counter}}.
+                                <div class="float-right">${{enrollment.var}}</div>
+                        </div><br/>
+                        <p>{{enrollment}}</p>
+                        <p>{{enrollment.package}}</p>
+                        <p>
+                        {% if counsoler.level == 'FAO' %}
+                            {{enrollment.faoStart}} to {{enrollment.faoEnd}}
+                        {% elif counsoler.level == 'GC' %}
+                            {{enrollment.gcStart}} to {{enrollment.gcEnd}}
+                        {% endif %}
+                        </p>
                     </div>
-                {% empty %}
+                    {% empty %}
                     <div>No Workloads</div>
                 {% endfor %}
             
-         </div>
+            </div>
+     </div>
 </div>
 {% endblock %}

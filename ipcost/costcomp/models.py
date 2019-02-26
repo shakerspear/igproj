@@ -180,8 +180,8 @@ def startdate_default():
 
 #used for period of counsoler performance evaluation
 class periodQuery(forms.Form):
-    startDate = forms.DateField(widget=forms.TextInput(attrs={'class':'form-control col-3', 'type':'date'}), initial=startdate_default)
-    endDate = forms.DateField(widget=forms.TextInput(attrs={'class':'form-control col-3', 'type':'date'}), initial=date.today)
+    startDate = forms.DateField(widget=forms.TextInput(attrs={'class':'form-control col-8', 'type':'date'}), initial=startdate_default)
+    endDate = forms.DateField(widget=forms.TextInput(attrs={'class':'form-control col-8', 'type':'date'}), initial=date.today)
 
     def clean(self):
         endDate = self.cleaned_data["endDate"]
