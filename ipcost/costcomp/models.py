@@ -77,7 +77,7 @@ class Enrollment(models.Model):
     faoEnd = models.DateField(default=enddate_default, blank=True, null=True)
     gcStart = models.DateField(default=date.today, blank=True, null=True)
     gcEnd = models.DateField(default=enddate_default, blank=True, null=True)
-    
+    var = models.FloatField(blank=True, null=True) #temprarily store enrollment instance cost to render on the webpage
 
     def dateDiff(self, endDate, startDate):
         dateDiff = endDate - startDate
@@ -92,38 +92,42 @@ class Enrollment(models.Model):
 
         if counsoler.level == 'GC':
                         
-            if self.gcEnd <= startDate or gcStart >= endDate:
+            if self.gcEnd <= startDate or self.gcStart >= endDate:
                 return 0
             else:
                 gcStart = max(self.gcStart, startDate)
                 gcEnd = min(self.gcEnd, endDate)
             
-            if self.package.courseHours:
+            if not self.package.courseHours:
+                courseHours = 0
+                studentCount = 1
+            elif not self.fao:
+                courseHours = self.package.courseHours
                 studentCount = self.students.count()
             else:
-                studentCount = 1
+                courseHours = 0
+                studentCount = self.students.count()
 
-            hours = self.package.gcHours * studentCount
+            hours = self.package.gcHours * studentCount + courseHours
             cost = counsolerCost(self.GC_Cost, hours, gcStart, gcEnd, packStart, packEnd)
             
             return round(cost,2)
         
         elif counsoler.level == 'FAO':
-            if self.package.courseHours:
-               courseHours = self.package.courseHours
-               studentCount = self.students.count()
-            else:
-               courseHours = 0
-               studentCount = 1
-
-            hours = self.package.faoHours * studentCount + courseHours
-
             if self.faoEnd <= startDate or self.faoStart >= endDate:
                 return 0
             else:
                 faoStart = max(self.faoStart, startDate)
                 faoEnd = min(self.faoEnd, endDate)
-            
+
+            if not self.package.courseHours:
+               courseHours = 0
+               studentCount = 1
+            else:
+               courseHours = self.package.courseHours
+               studentCount = self.students.count()
+
+            hours = self.package.faoHours * studentCount + courseHours
             cost = counsolerCost(self.FAO_Cost, hours, faoStart, faoEnd, packStart, packEnd)
             
             return round(cost,2)
@@ -142,9 +146,23 @@ class Enrollment(models.Model):
         if self.fao is None:
             self.faoStart = None
             self.faoEnd = None
+        elif not self.faoStart or not self.faoEnd:
+            raise ValidationError(_('You have chosen a FAO, please set the FAO dates.'))
+        
         if self.gc is None:
             self.gcStart = None
             self.gcEnd = None
+        elif not self.gcStart or not self.gcEnd:
+            raise ValidationError(_('You have chosen a GC, please set the GC dates.'))
+        
+    
+
+        if self.package.faoHours and not self.fao:
+            raise ValidationError(_('Please select a FAO for this package.'))
+
+        if self.package.gcHours and not self.gc:
+            raise ValidationError(_('Please select a GC for this package.'))
+
 
     #optimization can be done here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   
     def __str__(self):
@@ -153,7 +171,7 @@ class Enrollment(models.Model):
         for student in students:
             stuNames.append(student.first)
         names = ', '.join(stuNames)
-        return f'{names} enrolled in {self.package}: {self.packStart} to {self.packEnd}'
+        return f'{names}'
 
 
 def startdate_default():
@@ -162,8 +180,8 @@ def startdate_default():
 
 #used for period of counsoler performance evaluation
 class periodQuery(forms.Form):
-    startDate = forms.DateField(initial=startdate_default)
-    endDate = forms.DateField(initial=date.today)
+    startDate = forms.DateField(widget=forms.TextInput(attrs={'class':'form-control col-3', 'type':'date'}), initial=startdate_default)
+    endDate = forms.DateField(widget=forms.TextInput(attrs={'class':'form-control col-3', 'type':'date'}), initial=date.today)
 
     def clean(self):
         endDate = self.cleaned_data["endDate"]

@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse
@@ -5,24 +6,46 @@ from .models import *
 
 
 
+
 #index route
 def index(request):
-    
+    if not request.user.is_authenticated:
+        return render(request, "costcomp/login.html", {"message": "Here lies InGeniusPrep counsolers' deepest secrets!"})
+
     context = {
         "counsolers": Counsoler.objects.all()
     }
 
     return render(request, "costcomp/index.html", context)
 
+#login view
+def login_view(request):
+    username = request.POST["username"]
+    password = request.POST["password"]
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return HttpResponseRedirect(reverse("index"))
+    else:
+        return render(request, "costcomp/login.html", {"message": "Invalid Credential."})
 
+
+#logout view
+def logout_view(request):
+    logout(request)
+    return render(request, "costcomp/login.html", {"message": "Logged Out."})
 
 #for individual counsoler
 def counsoler(request, counsoler_id):
-    def costToSalaryDiff(totalCost, queryStart, queryEnd, salaryTotal):
+    if not request.user.is_authenticated:
+        return render(request, "costcomp/login.html", {"message": None})
+
+
+    def salaryToCostDiff(totalCost, queryStart, queryEnd, salaryTotal):
         '''To calculate the cost to salary difference, salary here is yearly cost which will be divided by 365 days to get unit-cost'''
         daysDiff = queryEnd - queryStart
-        CSDiff = totalCost - salaryTotal/365*daysDiff.days
-        return round(CSDiff, 2)
+        SCDiff = salaryTotal/365*daysDiff.days - totalCost 
+        return round(SCDiff, 2)
 
 
     try:
@@ -45,21 +68,24 @@ def counsoler(request, counsoler_id):
             #calculate total cost for certain period of time
             totalCost = 0
             for enrollment in enrollments:
-                 totalCost += enrollment.cost(counsoler, startDate, endDate)
-            
-            CSDiff = costToSalaryDiff(totalCost, startDate, endDate, counsoler.total)
+                enrollment.var = enrollment.cost(counsoler, startDate, endDate)
+                totalCost += enrollment.var
 
+            SCDiff = salaryToCostDiff(totalCost, startDate, endDate, counsoler.total)
+            
             context = {
+                "user": request.user,
                 "form": form,
                 "counsoler": counsoler,
                 "enrollments": enrollments,
-                "totalCost": totalCost,
-                "CSDiff": CSDiff,
+                "defrayal": round(totalCost, 2),
+                "SCDiff": SCDiff,
             }
 
             return render(request, "costcomp/counsoler.html", context)
             
         context = {
+            "user": request.user,
             "form": form,
             "counsoler": counsoler,
         }
@@ -73,6 +99,7 @@ def counsoler(request, counsoler_id):
         form = periodQuery()
 
         context = {
+            "user": request.user,
             "form": form,
             "counsoler": counsoler,
             "enrollments": enrollments,

@@ -5,25 +5,34 @@ Counsoler List
 {% endblock %}
 
 {% block body %}
-    <h2>Counsoler List</h2>
-    
-    <table>
-        <tr>
-            <th>Counsoler</th>
-            <th>Role</th>
-            <th>Salary</th>
-            <th>Guarantee</th>
-        </tr>    
-        {% for counsoler in counsolers %}
-        <tr>
-            <td>
-                <a href="{% url 'counsoler' counsoler.id %}">
-                {{counsoler.first}} {{counsoler.last}}
-                </a>
-            </td>
-            <td>{{counsoler.level}}</td>
-            <td>{{counsoler.salary}}</td>
-            <td>{{counsoler.guaranteed}}</td>
-        </tr>
-        {% endfor %}
+    <div class= "container">
+        <p class="col-12">Current Logged in: {{user.first_name}} {{user.last_name}}  <a href="{% url 'logout' %}" class="float-right">Logout</a></p>
+
+        <br/>
+        <h1>Counsolers</h1>
+        <br/>
+        <table class="table table-hover">
+            <thead>
+                <tr class="d-flex">
+                    <th scope="col" class="col-3">Counsoler</th>
+                    <th scope="col" class="col-3">Role</th>
+                    <th scope="col" class="col-3">Salary</th>
+                    <th scope="col" class="col-3">Guarantee</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for counsoler in counsolers %}
+            <a href="{% url 'counsoler' counsoler.id %}">
+            <tr class="d-flex" onclick="window.location='{{counsoler.id}}';">
+                <th scope="row" class="col-3">
+                    {{counsoler.first}} {{counsoler.last}}
+                </th>
+                <td class="col-3">{{counsoler.level}}</td>
+                <td class="col-3">{{counsoler.salary}}</td>
+                <td class="col-3">{{counsoler.guaranteed}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+       </table>
+   </div>
 {% endblock %}

@@ -4,31 +4,50 @@
 Counsoler Details
 {% endblock %}
 
-{% block body %}
-    <ul>
-        <h1>{{counsoler.first}} {{counsoler.last}}</h1>
-        <li>Salary: {{counsoler.salary}}</li>
-        <li>Guaranteed: {{counsoler.guaranteed}}</li>
-        <li>Total: {{counsoler.total}}</li>
-        <li>
-            Workloads:
-            <ul>
-                {% for enrollment in enrollments %}
-                    <li>{{enrollment}}</li>
-                {% empty %}
-                    <li>No Workloads</li>
-                {% endfor %}
-            </ul>
-         </li>
-            
-         <li>Total Cost:{{totalCost}}</li>
-         <h3>Cost to Salary Difference: {{CSDiff}}</h3>
+{% block style %}
+{% endblock %}
 
-    </ul>
-    <form action="{% url 'counsoler' counsoler.id%}" method="post">
-        {% csrf_token %}
-        {{form}}
-        <input type="submit" value="Submit">
-    </form>   
-    <a href='{% url "index" %}'>Back to counsoler list</a>
+{% block body %}
+<div class="container" style="padding:20px;">
+        <div class="col-10"><a href='{% url "index" %}' class="float-right">Back to counsoler list</a></div>
+        <br/>
+        <h1>{{counsoler.first}} {{counsoler.last}}</h1>
+        <p>Salary: {{counsoler.salary}}</p>
+        <p>Guaranteed: {{counsoler.guaranteed}}</p>
+        <p>Total Compensation: {{counsoler.total}}</p>
+        <p>Defrayal :{{defrayal}}</p>
+        <p>Comp. to Defrayal Difference: {{SCDiff}}</p>
+
+        <form action="{% url 'counsoler' counsoler.id%}" method="post">
+            {% csrf_token %}
+            {{form}}
+            <br/>
+            <button type="submit" class="btn btn-outline-secondary">Submit</button>
+        </form>   
+        <br/> 
+        <p>Workloads:</p>
+        <div style="display:flex; flex-wrap:wrap;">
+            
+                {% for enrollment in enrollments %}
+                    <div style="background-color:#F2F2F2; font-size:14px; margin: 20px; padding:20px; width:200px;">
+                    <div>
+                        {{forloop.counter}}.
+                        <div class="float-right">${{enrollment.var}}</div>
+                    </div><br/>
+                    <p>{{enrollment}}</p>
+                    <p>{{enrollment.package}}</p>
+                    <p>
+                    {% if counsoler.level == 'FAO' %}
+                        {{enrollment.faoStart}} to {{enrollment.faoEnd}}
+                    {% elif counsoler.level == 'GC' %}
+                        {{enrollment.gcStart}} to {{enrollment.gcEnd}}
+                    {% endif %}
+                    </p>
+                    </div>
+                {% empty %}
+                    <div>No Workloads</div>
+                {% endfor %}
+            
+         </div>
+</div>
 {% endblock %}
