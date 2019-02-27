@@ -92,9 +92,9 @@ def counsoler(request, counsoler_id):
 
     else:
         if counsoler.level == 'FAO':
-            enrollments =  Enrollment.objects.select_related("package").filter(fao__id=counsoler_id)
+            enrollments =  Enrollment.objects.filter(fao__id=counsoler_id)
         elif counsoler.level == 'GC':
-            enrollments =  Enrollment.objects.select_related("package").filter(gc__id=counsoler_id)
+            enrollments =  Enrollment.objects.filter(gc__id=counsoler_id)
         
         form = periodQuery()
 

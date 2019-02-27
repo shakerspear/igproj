@@ -1,12 +1,27 @@
 {% extends "costcomp/base.html" %}
+{% load static %}
+
+{% block link %}
+<link rel="stylesheet" href="{% static "costcomp/index.css" %}"/>
+{% endblock %}
+
 
 {% block title %}
 Counsoler List
 {% endblock %}
 
 {% block body %}
-    <div class= "container">
-        <p class="col-12">Current Logged in: {{user.first_name}} {{user.last_name}}  <a href="{% url 'logout' %}" class="float-right">Logout</a></p>
+<nav class="navbar navbar-default fixed-top">
+    <div class="container">
+
+        <ul class="col-12">
+
+            <li><div>Current User: {{user.first_name}} {{user.last_name}}</div></li>
+            <li class="float-right"><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+   <div class= "container">
 
         <br/>
         <h1>Counsolers</h1>

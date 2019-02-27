@@ -1,4 +1,6 @@
 {% extends "costcomp/base.html" %}
+{% load static %}
+{% load humanize %}
 
 {% block title %}
 Counsoler Details
@@ -9,14 +11,19 @@ Counsoler Details
 
 {% block body %}
 <div class="container" style="padding:20px;">
-    <div class="row">
+    <div style="margin:20px;" class="row">
+        <div class="col-6"><img class="img-fluid" src="{% static "costcomp/ingenius-logo.png" %}" id="icon" alt="InGeniusPrep Logo" /></div>
+        <div class="col-6"><a href='{% url "index" %}' style="float:right;">Back to counsoler list</a></div>
+    </div>
+    <div style="margin:20px;" class="row">
         <div class="col-3" style="background-color:steelblue; color:white; padding:20px;">
+            <h5>{{counsoler.level}}</h5>
             <h1>{{counsoler.first}} {{counsoler.last}}</h1>
-            <p>Salary: {{counsoler.salary}}</p>
-            <p>Guaranteed: {{counsoler.guaranteed}}</p>
-            <p>Compensation: {{counsoler.total}}</p>
-            <p>Defrayal :{{defrayal}}</p>
-            <p>Comp. - Defrayal: {{SCDiff}}</p>
+            <p>Salary: $ {{counsoler.salary|intcomma}}</p>
+            <p>Guaranteed:  ${{counsoler.guaranteed|intcomma}}</p>
+            <p>Compensation:  ${{counsoler.total|intcomma}}</p>
+            <p>Defrayal : ${{defrayal|intcomma}}</p>
+            <p>Comp.-Defrayal:  ${{SCDiff|intcomma}}</p>
 
             <form action="{% url 'counsoler' counsoler.id%}" method="post">
                 {% csrf_token %}
@@ -27,16 +34,20 @@ Counsoler Details
         </div>
         
         <div class="col-9">
-            <div><b>Workloads:</b><a href='{% url "index" %}' style="float:right;">Back to counsoler list</a></div>
+            <div><b>Workloads:</b></div>
             <div style="display:flex; flex-wrap:wrap;">
             
                 {% for enrollment in enrollments %}
-                    <div style="background-color:#F2F2F2; font-size:14px; margin: 20px; padding:20px; width:220px;">
+                    <div style="background-color:#F2F2F2; font-size:14px; margin: 20px; padding:20px; width:200px;">
                         <div>
                             {{forloop.counter}}.
-                                <div class="float-right">${{enrollment.var}}</div>
+                                <div class="float-right">${{enrollment.var|intcomma}}</div>
                         </div><br/>
-                        <p>{{enrollment}}</p>
+                        <p>
+                        {% for student in enrollment.students.all %}
+                            {{student.first}} {{student.last}}<br/> 
+                        {% endfor %}
+                        </p>
                         <p>{{enrollment.package}}</p>
                         <p>
                         {% if counsoler.level == 'FAO' %}
