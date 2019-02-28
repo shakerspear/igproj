@@ -1,53 +1,57 @@
 {% extends "costcomp/base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block link %}
-<link rel="stylesheet" href="{% static "costcomp/index.css" %}"/>
+<script src="{% static "costcomp/sorting.js" %}"></script>
 {% endblock %}
 
+{% block style %}
+body {
+margin:70px;
+}
+{% endblock %}
 
 {% block title %}
 Counsoler List
 {% endblock %}
 
 {% block body %}
-<nav class="navbar navbar-default fixed-top">
-    <div class="container">
+    <nav style="background-color:steelblue;" class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            
+            <div class="navbar-brand text-white">{{user.first_name}} {{user.last_name}}</div>
+            <div class="nav-item"><a class="nav-link text-white" href="{% url 'logout' %}">Logout</a></div>
+        </div>
+    </nav>
+    <div class= "container">
 
-        <ul class="col-12">
-
-            <li><div>Current User: {{user.first_name}} {{user.last_name}}</div></li>
-            <li class="float-right"><a href="{% url 'logout' %}">Logout</a></li>
-        </ul>
-    </div>
-</nav>
-   <div class= "container">
-
-        <br/>
         <h1>Counsolers</h1>
-        <br/>
-        <table class="table table-hover">
+        <p style="float:right; color:steelblue;">Numbers calculated based on current calendar year</p>
+        <table id="myTable" class="table table-hover">
             <thead>
                 <tr class="d-flex">
-                    <th scope="col" class="col-3">Counsoler</th>
-                    <th scope="col" class="col-3">Role</th>
-                    <th scope="col" class="col-3">Salary</th>
-                    <th scope="col" class="col-3">Guarantee</th>
+                    <th scope="col" class="col-3" onclick="sortAlf(0)">Counsoler</th>
+                    <th scope="col" class="col-3" onclick="sortAlf(1)">Role</th>
+                    <th scope="col" class="col-2" onclick="sortNum(2)">Compensation</th>
+                    <th scope="col" class="col-2" onclick="sortNum(3)">Defrayal</th>
+                    <th scope="col" class="col-2" onclick="sortNum(4)">Difference</th>
                 </tr>
             </thead>
             <tbody>
             {% for counsoler in counsolers %}
             <a href="{% url 'counsoler' counsoler.id %}">
             <tr class="d-flex" onclick="window.location='{{counsoler.id}}';">
-                <th scope="row" class="col-3">
-                    {{counsoler.first}} {{counsoler.last}}
-                </th>
+                <td scope="row" class="col-3">
+                   <b> {{counsoler.first}} {{counsoler.last}}</b>
+                </td>
                 <td class="col-3">{{counsoler.level}}</td>
-                <td class="col-3">{{counsoler.salary}}</td>
-                <td class="col-3">{{counsoler.guaranteed}}</td>
+                <td class="col-2">{{counsoler.total}}</td>
+                <td class="col-2">{{counsoler.curYearCost}}</td>
+                <td class="col-2">{{counsoler.compDefrDiff}}</td>
             </tr>
             {% endfor %}
             </tbody>
-       </table>
-   </div>
+        </table>
+    </div>
 {% endblock %}

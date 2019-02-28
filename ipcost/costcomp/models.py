@@ -23,6 +23,29 @@ class Counsoler(models.Model):
     def total(self): 
         return self.salary + self.guaranteed
     
+    @property
+    def curYearCost(self):
+        startDate = date(date.today().year, 1, 1)
+        endDate = date(date.today().year, 12, 31)
+        if self.level == 'FAO':
+            enrollments = Enrollment.objects.filter(fao__id=self.id, packStart__lt=endDate, packEnd__gt=startDate)
+        elif self.level == 'GC':
+            enrollments = Enrollment.objects.filter(gc__id=self.id, packStart__lt=endDate, packEnd__gt=startDate)
+        #calculate total cost for certain period of time
+        totalCost = 0
+        for enrollment in enrollments:
+            enrollment.var = enrollment.cost(self, startDate, endDate)
+            totalCost += enrollment.var
+        return totalCost
+
+    @property
+    def compDefrDiff(self):
+        return self.total - self.curYearCost
+
+
+
+
+
     def __str__(self):
         return f'{self.level} {self.first} {self.last}'
    
