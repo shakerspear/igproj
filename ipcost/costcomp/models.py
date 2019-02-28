@@ -171,14 +171,18 @@ class Enrollment(models.Model):
             self.faoEnd = None
         elif not self.faoStart or not self.faoEnd:
             raise ValidationError(_('You have chosen a FAO, please set the FAO dates.'))
+        elif self.faoStart > self.faoEnd or self.faoStart < self.packStart or self.faoEnd > self.packEnd:
+            raise ValidationError(_('Please choose valid FAO dates.'))    
         
         if self.gc is None:
             self.gcStart = None
             self.gcEnd = None
         elif not self.gcStart or not self.gcEnd:
             raise ValidationError(_('You have chosen a GC, please set the GC dates.'))
+        elif self.gcStart > self.gcEnd or self.gcStart < self.packStart or self.gcEnd > self.packEnd:
+            raise ValidationError(_('Please choose valid GC dates.'))
         
-    
+        
 
         if self.package.faoHours and not self.fao:
             raise ValidationError(_('Please select a FAO for this package.'))
